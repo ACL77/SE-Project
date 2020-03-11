@@ -1,13 +1,8 @@
 package pt.ulisboa.tecnico.learnjava.bank.account;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import pt.ulisboa.tecnico.learnjava.bank.domain.Account;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.CheckingAccount;
@@ -15,6 +10,10 @@ import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ConstructorMethodTest {
 	private static final int AMOUNT = 100;

@@ -26,5 +26,20 @@ public class Services {
 
 		return account;
 	}
+	
+	public Bank getBankByIban(String iban) {
+		String code = iban.substring(0, 3);
+		
+		return Bank.getBankByCode(code);
+	}
+		
+	public Boolean verifyAccountExistanceInBank(String iban) {
+		
+		return this.getAccountByIban(iban) != null; 
+	}
+	
+	public Boolean verifySameBank(String sourceIban, String targetIban) {
+		return this.getBankByIban(sourceIban).equals(this.getBankByIban(targetIban));
+	}
 
 }
