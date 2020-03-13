@@ -16,34 +16,18 @@ public class Sibs {
 
 	public void transfer(String sourceIban, String targetIban, int amount)
 			throws SibsException, AccountException, OperationException {
-		
-		int position = addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
-		
-		int value = amount;
-		int fee = operations[position].commission();
-		//verifies if the account exists and if the bank in the iban is the bank where
-		//the account is
-		if( !this.services.verifyAccountExistanceInBank(targetIban) 
+
+		// verifies if the account exists and if the bank in the iban is the bank where
+		// the account is
+		if (!this.services.verifyAccountExistanceInBank(targetIban)
 				|| !this.services.verifyAccountExistanceInBank(sourceIban)) {
 			throw new SibsException();
 		}
-		//add a fee to the amount if banks are different
-		if (!this.services.verifySameBank(sourceIban, targetIban)) {
-			value = amount + fee;
-		}	
-		
-		try {
-			this.services.deposit(targetIban, amount);
-		}catch(AccountException e) {
-			//change exception here
-			return;
+		int position = addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
+		while() {
+			this.operations[position].process(this.services);
 		}
-		
-		this.services.withdraw(sourceIban, value);
-		
-		
 
-		
 	}
 
 	public int addOperation(String type, String sourceIban, String targetIban, int value)
@@ -63,11 +47,10 @@ public class Sibs {
 		Operation operation;
 		if (type.equals(Operation.OPERATION_TRANSFER)) {
 			operation = new TransferOperation(sourceIban, targetIban, value);
-			
+
 		} else {
 			operation = new PaymentOperation(targetIban, value);
 		}
-		
 
 		this.operations[position] = operation;
 		return position;
