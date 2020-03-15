@@ -18,6 +18,7 @@ public class TransferOperation extends Operation {
 //	public enum TransferState {
 //		REGISTERED("RE"), WITHDRAWN("WI"), DEPOSITED("DE"), COMPLETED("CO"), CANCELLED("CA");
 //
+	
 //		private String state;
 //
 //		TransferState(String state) {

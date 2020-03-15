@@ -16,6 +16,7 @@ public abstract class Operation {
 		checkParameters(type, value);
 		this.type = type;
 		this.value = value;
+		
 	}
 
 	private void checkParameters(String type, int value) throws OperationException {

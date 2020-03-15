@@ -25,6 +25,7 @@ public class TransferMethodTest {
 	private static final String LAST_NAME = "Silva";
 	private static final String FIRST_NAME = "António";
 
+	
 	private Sibs sibs;
 	private Bank sourceBank;
 	private Bank targetBank;
