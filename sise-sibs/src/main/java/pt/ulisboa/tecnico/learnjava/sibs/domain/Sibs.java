@@ -23,11 +23,8 @@ public class Sibs {
 				|| !this.services.verifyAccountExistanceInBank(sourceIban)) {
 			throw new SibsException();
 		}
-		int position = addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
-		while() {
-			this.operations[position].process(this.services);
-		}
-
+		
+		addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
 	}
 
 	public int addOperation(String type, String sourceIban, String targetIban, int value)

@@ -40,7 +40,7 @@ public abstract class Operation {
 		return this.value;
 	}
 
-	public void process(Services services) throws SibsException, AccountException, OperationException {
+	public void process() throws SibsException, AccountException, OperationException {
 	}
 
 }

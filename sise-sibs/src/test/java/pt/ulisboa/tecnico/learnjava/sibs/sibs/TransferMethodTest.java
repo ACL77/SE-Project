@@ -41,13 +41,30 @@ public class TransferMethodTest {
 		this.sourceClient = new Client(this.sourceBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
 		this.targetClient = new Client(this.targetBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
 	}
-
+	
 	@Test
-	public void success() throws BankException, AccountException, SibsException, OperationException, ClientException {
+	public void createTransferOperationWithNoMoneyTransfer() throws BankException, AccountException, SibsException, OperationException, ClientException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
 		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
 
 		this.sibs.transfer(sourceIban, targetIban, 100);
+
+		//TODO como verifico que o estado da TransferOperation é o devido? nao consigo aceder
+		assertEquals(1000, this.services.getAccountByIban(sourceIban).getBalance());
+		assertEquals(1000, this.services.getAccountByIban(targetIban).getBalance());
+		assertEquals(1, this.sibs.getNumberOfOperations());
+		assertEquals(100, this.sibs.getTotalValueOfOperations());
+		assertEquals(100, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+	}
+	
+	@Test
+	public void moneyTransferedWhenTransferoperationStateIsCompleted() throws BankException, AccountException, SibsException, OperationException, ClientException {
+		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
+		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
+
+		this.sibs.transfer(sourceIban, targetIban, 100);
+		//this.sibs.processOperations();
 
 		assertEquals(894/*900*/, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
@@ -55,7 +72,25 @@ public class TransferMethodTest {
 		assertEquals(100, this.sibs.getTotalValueOfOperations());
 		assertEquals(100, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
 		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+		//TODO como verifico que o estado da TransferOperation é o devido? nao consigo aceder
 	}
+	
+//	@Test
+//	public void moneyTransferedWhenTransferoperationStateIsCompleted() throws BankException, AccountException, SibsException, OperationException, ClientException {
+//		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
+//		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
+//
+//		this.sibs.transfer(sourceIban, targetIban, 100);
+//		this.sibs.processOperations();
+//
+//		//TODO como verifico que o estado da TransferOperation é o devido? nao consigo aceder
+//		assertEquals(894/*900*/, this.services.getAccountByIban(sourceIban).getBalance());
+//		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
+//		assertEquals(1, this.sibs.getNumberOfOperations());
+//		assertEquals(100, this.sibs.getTotalValueOfOperations());
+//		assertEquals(100, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+//		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+//	}
 	
 
 	@After
