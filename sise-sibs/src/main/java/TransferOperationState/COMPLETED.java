@@ -1,6 +1,7 @@
-package pt.ulisboa.tecnico.learnjava.sibs.domain;
+package TransferOperationState;
 
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
+import pt.ulisboa.tecnico.learnjava.sibs.domain.StatesChain;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 
 public class COMPLETED implements TransferOperationState {
@@ -13,10 +14,8 @@ public class COMPLETED implements TransferOperationState {
 
 	@Override
 	public void cancel(StatesChain state) throws OperationException {
-		//not possible to cancel COMPLETED operation
-		throw new OperationException();
-		
-		
+		// not possible to cancel COMPLETED operation
+
 	}
 
 }

@@ -1,5 +1,9 @@
 package pt.ulisboa.tecnico.learnjava.sibs.domain;
 
+import TransferOperationState.CANCELLED;
+import TransferOperationState.COMPLETED;
+import TransferOperationState.ERROR;
+import TransferOperationState.RETRY;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
@@ -17,15 +21,41 @@ public class Sibs {
 	public void transfer(String sourceIban, String targetIban, int amount)
 			throws SibsException, AccountException, OperationException {
 
-		
 		// verifies if the account exists and if the bank in the iban is the bank where
 		// the account is
 		if (!this.services.verifyAccountExistanceInBank(targetIban)
 				|| !this.services.verifyAccountExistanceInBank(sourceIban)) {
 			throw new SibsException();
 		}
-		
+
 		addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
+	}
+
+	public void processOperations() throws SibsException, AccountException, OperationException {
+		for (Operation operation : this.operations) {
+			if (operation != null && operation.getType().equals(Operation.OPERATION_TRANSFER)) {
+				TransferOperation transfer = (TransferOperation) operation;
+				while (!(transfer.getStateContext().getCurrentState() instanceof COMPLETED)
+						&& !(transfer.getStateContext().getCurrentState() instanceof CANCELLED)
+						&& !(transfer.getStateContext().getCurrentState() instanceof ERROR)) {
+					try {
+						transfer.process();
+					} catch (Exception e) {
+						if (transfer.getStateContext().getCurrentState() instanceof RETRY) {
+							transfer.process();
+						} else {
+							transfer.getStateContext().setState(new RETRY());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// assuming that the id is the operation number on the array
+	public void cancelOperation(int n) throws OperationException, AccountException, SibsException {
+		TransferOperation operation = (TransferOperation) this.getOperation(n);
+		operation.cancel();
 	}
 
 	public int addOperation(String type, String sourceIban, String targetIban, int value)
