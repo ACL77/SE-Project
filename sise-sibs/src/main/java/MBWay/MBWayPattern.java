@@ -21,6 +21,7 @@ public class MBWayPattern {
 				model.associateMBWay(parameters[1], parameters[2]);
 			}
 		}
+		// TEST
 
 	}
 }
