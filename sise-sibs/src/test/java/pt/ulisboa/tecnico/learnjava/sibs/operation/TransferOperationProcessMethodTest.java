@@ -199,6 +199,11 @@ public class TransferOperationProcessMethodTest {
 	public void errorTransferOperation() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
+		// 3 times to RETRY
+		transferOperation.process();
+		transferOperation.process();
+		transferOperation.process();
+		// reach ERROR
 		transferOperation.process();
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof ERROR);
@@ -210,7 +215,13 @@ public class TransferOperationProcessMethodTest {
 	public void processErrorTransferOperation() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
+		// 3 times to RETRY
 		transferOperation.process();
+		transferOperation.process();
+		transferOperation.process();
+		// reach ERROR
+		transferOperation.process();
+		// try to process ERROR
 		transferOperation.process();
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof ERROR);
@@ -222,7 +233,13 @@ public class TransferOperationProcessMethodTest {
 	public void cancelErrorTransferOperation() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
+		// 3 times to RETRY
 		transferOperation.process();
+		transferOperation.process();
+		transferOperation.process();
+		// reach ERROR
+		transferOperation.process();
+		// try to cancel ERROR
 		transferOperation.cancel();
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof ERROR);

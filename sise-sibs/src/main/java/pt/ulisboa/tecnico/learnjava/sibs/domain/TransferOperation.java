@@ -27,7 +27,7 @@ public class TransferOperation extends Operation {
 		try {
 			this.stateContext.process();
 		} catch (Exception e) {
-			this.stateContext.setState(new RETRY());
+			this.stateContext.setState(new RETRY(this.stateContext.getCurrentState()));
 		}
 	}
 

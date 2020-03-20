@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.learnjava.sibs.domain;
 
 import TransferOperationState.REGISTERED;
-import TransferOperationState.RETRY;
 import TransferOperationState.TransferOperationState;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
@@ -16,7 +15,6 @@ public class StatesChain {
 	private Services services;
 
 	private TransferOperationState currentState;
-	private TransferOperationState PreviousState;
 
 	public StatesChain(String sourceIban, String targetIban, int value, int commission) {
 
@@ -26,13 +24,9 @@ public class StatesChain {
 		this.commission = commission;
 		this.services = new Services();
 		this.currentState = new REGISTERED();
-		this.PreviousState = this.currentState;
 	}
 
 	public void setState(TransferOperationState state) {
-		if (state instanceof RETRY) {
-			this.PreviousState = this.currentState;
-		}
 		this.currentState = state;
 	}
 
@@ -71,10 +65,6 @@ public class StatesChain {
 
 	public TransferOperationState getCurrentState() {
 		return this.currentState;
-	}
-
-	public TransferOperationState getPreviousState() {
-		return this.PreviousState;
 	}
 
 }

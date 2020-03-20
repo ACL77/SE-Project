@@ -6,11 +6,16 @@ import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 
 public class RETRY implements TransferOperationState {
 	private int count = 3;
+	private TransferOperationState previousState;
+
+	public RETRY(TransferOperationState previousState) {
+		this.previousState = previousState;
+	}
 
 	@Override
 	public void process(StatesChain state) throws AccountException, OperationException {
 		try {
-			state.setState(state.getPreviousState());
+			state.setState(this.previousState);
 			state.process();
 		} catch (Exception e) {
 			this.count--;
