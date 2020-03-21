@@ -2,15 +2,18 @@ package MBWay;
 
 import java.util.HashMap;
 
+import pt.ulisboa.tecnico.learnjava.sibs.domain.Sibs;
+
 public class MBWayModel {
 
-	private HashMap<String, String> mbWay = new HashMap<String, String>();
+	private static HashMap<String, String> mbWay = new HashMap<String, String>();
 	private HashMap<String, String> codeMBWay = new HashMap<String, String>();
+	private Sibs sibs;
 
 	// Associate the PhoneNumber to the Account through the IBAN
 	// Assuming that for each phoneNumber is possible to associate just one account
 	public String associateMBWay(String iban, String phoneNumber) {
-		this.mbWay.put(phoneNumber, iban);
+		MBWayModel.mbWay.put(phoneNumber, iban);
 		String code = generateCode();
 		this.codeMBWay.put(phoneNumber, code);
 		return code;
@@ -18,10 +21,29 @@ public class MBWayModel {
 
 	public String confirmMBWay(String phoneNumber, String code) {
 		if (!code.equals(this.codeMBWay.get(phoneNumber))) {
-			this.mbWay.remove(phoneNumber);
+			MBWayModel.mbWay.remove(phoneNumber);
 			return "Wrong confirmation code. Try association again.";
 		}
 		return "MBWAY association confirmed successfully!";
+	}
+
+	public String mbWayTransfer(String SourcephoneNumber, String targetPhoneNumber, int amount) {
+		String SourceIban = mbWay.get(SourcephoneNumber);
+		String TargetIban = mbWay.get(targetPhoneNumber);
+		if (!SourceIban.equals(null) && !TargetIban.equals(null)) {
+			try {
+				this.sibs.transfer(SourceIban, TargetIban, amount);
+			} catch (Exception e) {
+				return "Not enough money on the source account.";
+			}
+			return "Transfer performed successfully!";
+		} else {
+			return "Wrong phone number.";
+		}
+	}
+
+	public String mbWaySplitBill(String phoneNumber, String friendPhoneNumber, int ammount) {
+
 	}
 
 	private String generateCode() {
