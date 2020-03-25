@@ -7,12 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import TransferOperationState.CANCELLED;
-import TransferOperationState.COMPLETED;
-import TransferOperationState.DEPOSITED;
-import TransferOperationState.ERROR;
-import TransferOperationState.REGISTERED;
-import TransferOperationState.WITHDRAWN;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
@@ -22,6 +16,12 @@ import pt.ulisboa.tecnico.learnjava.bank.services.Services;
 import pt.ulisboa.tecnico.learnjava.sibs.domain.TransferOperation;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.SibsException;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.CANCELLED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.COMPLETED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.DEPOSITED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.ERROR;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.REGISTERED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.WITHDRAWN;
 
 public class TransferOperationProcessMethodTest {
 

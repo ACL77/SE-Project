@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.learnjava.sibs.domain;
 
-import TransferOperationState.REGISTERED;
-import TransferOperationState.TransferOperationState;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.REGISTERED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.TransferOperationState;
 
 public class StatesChain {
 	private final String sourceIban;

@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.learnjava.sibs.domain;
 
-import TransferOperationState.RETRY;
-import TransferOperationState.TransferOperationState;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.SibsException;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.RETRY;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.TransferOperationState;
 
 public class TransferOperation extends Operation {
 	private final String sourceIban;

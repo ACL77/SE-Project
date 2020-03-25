@@ -1,13 +1,13 @@
 package pt.ulisboa.tecnico.learnjava.sibs.domain;
 
-import TransferOperationState.CANCELLED;
-import TransferOperationState.COMPLETED;
-import TransferOperationState.ERROR;
-import TransferOperationState.RETRY;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.SibsException;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.CANCELLED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.COMPLETED;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.ERROR;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.RETRY;
 
 public class Sibs {
 	final Operation[] operations;
@@ -44,7 +44,7 @@ public class Sibs {
 						if (transfer.getStateContext().getCurrentState() instanceof RETRY) {
 							transfer.process();
 						} else {
-							transfer.getStateContext().setState(new RETRY());
+							transfer.getStateContext().setState(new RETRY(transfer.getState()));
 						}
 					}
 				}

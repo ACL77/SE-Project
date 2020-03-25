@@ -1,24 +1,21 @@
-package TransferOperationState;
+package pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate;
 
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.sibs.domain.StatesChain;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 
-public class WITHDRAWN implements TransferOperationState {
+public class CANCELLED implements TransferOperationState {
 
 	@Override
 	public void process(StatesChain state) throws AccountException, OperationException {
-		
-		state.deposit();
-		state.setState(new DEPOSITED());
+		// TODO Do nothing?? Stays in CANCELED mode...
+
 	}
 
 	@Override
-	public void cancel(StatesChain state) throws AccountException {
-		state.undoWithdrawValue();
-		state.setState(new CANCELLED());
-		
-		
+	public void cancel(StatesChain state) throws OperationException {
+		// TODO Do nothing?? Stays in CANCELED mode...
+
 	}
 
 }
