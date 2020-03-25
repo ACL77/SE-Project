@@ -88,9 +88,7 @@ public class MBWayPattern {
 			case "mbway-transfer":
 				String sourceNumber = parameters[1];
 				String targetNumber = parameters[2];
-				System.out.println("1");
 				int amount = stringToNumber(parameters[3]);
-				System.out.println("2");
 				controller.mbWayTransfer(sourceNumber, targetNumber, amount);
 				break;
 

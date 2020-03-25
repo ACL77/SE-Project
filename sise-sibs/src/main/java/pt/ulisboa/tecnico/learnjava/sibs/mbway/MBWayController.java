@@ -55,6 +55,7 @@ public class MBWayController {
 			throws MBWayException, SibsException, AccountException, OperationException {
 		try {
 			this.model.verifyFriends(amount);
+			this.model.verifyNumberOfFriends(numberOfFriends);
 		} catch (MBWayException e) {
 			this.view.somethingWrong(e.getErrorMessage());
 			return;

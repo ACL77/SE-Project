@@ -58,7 +58,7 @@ public class MBWayModel {
 		}
 	}
 
-	private String verifyNumberOfFriends(int numberOfFriends) throws MBWayException {
+	public void verifyNumberOfFriends(int numberOfFriends) throws MBWayException {
 		int numberOfAddedFriends = this.mbWay.get(this.firstFriendPhoneNumber).getFriends().size();
 		if (numberOfFriends > numberOfAddedFriends) {
 			throw new MBWayException("Oh no! One or more friends are missing.");
@@ -66,7 +66,7 @@ public class MBWayModel {
 		if (numberOfFriends < numberOfAddedFriends) {
 			throw new MBWayException("Oh no! Too many friends.");
 		}
-		return "equal";
+		return;
 	}
 
 	private void verifyAmount(int totalAmount) throws MBWayException {
