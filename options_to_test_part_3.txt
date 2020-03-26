@@ -1,0 +1,24 @@
+
+associate-mbway CGDCK1 123456789
+confirm-mbway 123456789
+
+associate-mbway BPICK2 123456788
+confirm-mbway 123456788
+
+(zero money account)
+associate-mbway CGDCK3 123456787
+confirm-mbway 123456787
+
+associate-mbway CGDCK4 123456786
+confirm-mbway 123456786
+
+--------------------------------------
+mbway-transfer 123456789 123456788 10
+
+--------------------------------------
+friend 123456789 10
+friend 123456788 9
+friend 123456786 11
+
+mbway-split-bill 3 30
+---------------------------------------
