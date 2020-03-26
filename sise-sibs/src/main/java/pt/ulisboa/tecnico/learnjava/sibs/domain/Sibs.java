@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.CANCELLED;
 import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.COMPLETED;
 import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.ERROR;
 import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.RETRY;
+import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.TransferOperationState;
 
 public class Sibs {
 	final Operation[] operations;

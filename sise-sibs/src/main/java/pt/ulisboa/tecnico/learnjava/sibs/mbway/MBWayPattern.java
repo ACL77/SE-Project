@@ -29,18 +29,6 @@ public class MBWayPattern {
 		return Integer.parseInt(string);
 	}
 
-//	private static void setUp() throws BankException, ClientException, AccountException {
-//		Services services = new Services();
-//		new Sibs(100, services);
-//		Bank bank1 = new Bank("CGD");
-//		Bank bank2 = new Bank("BPI");
-//		Client client1 = new Client(bank1, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
-//		Client client2 = new Client(bank2, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
-//		this.sourceIban = bank1.createAccount(Bank.AccountType.CHECKING, client1, 1000, 0);
-//		this.targetIban = bank2.createAccount(Bank.AccountType.CHECKING, client2, 1000, 0);
-//		String zeroSourceIban = bank1.createAccount(Bank.AccountType.CHECKING, client1, 0, 0);
-//	}
-
 	public static void main(String[] args)
 			throws MBWayException, SibsException, AccountException, OperationException, BankException, ClientException {
 		Services services = new Services();
@@ -49,9 +37,11 @@ public class MBWayPattern {
 		Bank bank2 = new Bank("BPI");
 		Client client1 = new Client(bank1, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
 		Client client2 = new Client(bank2, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
+		Client client3 = new Client(bank1, FIRST_NAME, LAST_NAME, "999999999", PHONE_NUMBER, ADDRESS, 20);
 		String sourceIban = bank1.createAccount(Bank.AccountType.CHECKING, client1, 1000, 0);
 		String targetIban = bank2.createAccount(Bank.AccountType.CHECKING, client2, 1000, 0);
 		String zeroSourceIban = bank1.createAccount(Bank.AccountType.CHECKING, client1, 0, 0);
+		String client3Iban = bank1.createAccount(Bank.AccountType.CHECKING, client3, 100, 0);
 
 		MBWayModel model = new MBWayModel();
 		MBWayView view = new MBWayView();
@@ -59,6 +49,8 @@ public class MBWayPattern {
 
 		System.out.println(sourceIban);
 		System.out.println(targetIban);
+		System.out.println(zeroSourceIban);
+		System.out.println(client3Iban);
 
 		Scanner newScanner = new Scanner(System.in);
 		System.out.println("Enter the command:");
@@ -67,9 +59,16 @@ public class MBWayPattern {
 		while (running) {
 
 			String newCommand = newScanner.nextLine();
-			String[] parameters = newCommand.split(" ");
+			String[] parameters=null;
+			try {
+				parameters = newCommand.split(" ");
+			}catch(Exception e) {
+				System.out.println("Wrong command. Try again");
+			}
+			
+			
 			String commandType = parameters[0];
-			System.out.println(commandType);
+			//System.out.println(commandType);
 
 			switch (commandType) {
 			case "exit":

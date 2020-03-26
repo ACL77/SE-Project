@@ -22,13 +22,17 @@ public class RETRY implements TransferOperationState {
 			state.setState(this);
 		}
 		if (this.count == 0) {
+			this.cancel(state);
 			state.setState(new ERROR());
+			
 		}
 	}
 
 	@Override
 	public void cancel(StatesChain state) throws OperationException, AccountException {
-		state.setState(new CANCELLED());
+		state.setState(this.previousState);
+		//is going to undo previous operations (before entering RETRY state)
+		state.cancel();
 	}
 
 }

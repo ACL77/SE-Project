@@ -40,11 +40,13 @@ public class MBWayController {
 		try {
 			if (this.model.mbWayTransfer(SourcephoneNumber, targetPhoneNumber, amount)) {
 				this.view.acceptedTransferMBWay();
+			}else {
+				this.view.declinedTransferMBWay();
 			}
-			this.view.declinedTransferMBWay();
 		} catch (Exception e) {
 			this.view.exceptionTransferMBWay();
 		}
+		
 	}
 
 	public void addFriend(String number, int amount) {

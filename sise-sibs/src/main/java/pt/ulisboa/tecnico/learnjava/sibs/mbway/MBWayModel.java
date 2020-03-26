@@ -11,27 +11,32 @@ import pt.ulisboa.tecnico.learnjava.sibs.exceptions.SibsException;
 
 public class MBWayModel {
 
-	private Sibs sibs;
+	Services services = new Services();
+	private Sibs sibs = new Sibs(100, services);
 	private static HashMap<String, MBWayAccount> mbWay = new HashMap<String, MBWayAccount>();
 	private String firstFriendPhoneNumber = null;
-	Services services = new Services();
+	
 
-	// Associate the PhoneNumber to the Account through the IBAN
-	// Assuming that for each phoneNumber is possible to associate just one account
+	/* Associate the PhoneNumber to the Account through the IBAN
+	* Assuming that for each phoneNumber is possible to associate just one account*/
 	public String associateMBWay(String iban, String phoneNumber) throws MBWayException {
 		if (this.services.getAccountByIban(iban) == null) {
 			throw new MBWayException("Wrong IBAN!Try again!");
 		}
-		if (phoneNumber.length() != 9) {
+		if (phoneNumber.length() != 9 ) {
 			throw new MBWayException("The phone number is not correct!");
+		}
+		if( this.mbWay.containsKey(phoneNumber) ) {
+			throw new MBWayException("The phone is already associated with an account!");
 		}
 		MBWayModel.mbWay.put(phoneNumber, new MBWayAccount(iban));
 		return mbWay.get(phoneNumber).getCode();
+		
 	}
 
 	public Boolean confirmMBWay(String phoneNumber, String code) throws MBWayException {
 		if (!(this.mbWay.containsKey(phoneNumber))) {
-			throw new MBWayException("The number is not yet associated with an account.");
+			throw new MBWayException("The phone number is not valid.");
 		} else if (!code.equals(mbWay.get(phoneNumber).getCode())) {
 			MBWayModel.mbWay.remove(phoneNumber);
 			return false;
@@ -42,13 +47,30 @@ public class MBWayModel {
 
 	}
 
+	//returns true if transfer was performed successfully
 	public Boolean mbWayTransfer(String SourcephoneNumber, String targetPhoneNumber, int amount)
 			throws SibsException, AccountException, OperationException, MBWayException {
-		if (mbWay.get(SourcephoneNumber).isValidated() && mbWay.get(targetPhoneNumber).isValidated()) {
+		int balanceBeforeTransfer;
+		if (this.mbWay.containsKey(SourcephoneNumber) && this.mbWay.containsKey(targetPhoneNumber)
+				&& mbWay.get(SourcephoneNumber).isValidated() && mbWay.get(targetPhoneNumber).isValidated()) {
 			String SourceIban = mbWay.get(SourcephoneNumber).getIban();
 			String TargetIban = mbWay.get(targetPhoneNumber).getIban();
+			//perform transfer if 
 			if ((SourceIban != null) && (TargetIban != null)) {
+				balanceBeforeTransfer = this.services.getAccountByIban(SourceIban).getBalance();
+				//Exception thrown if there is no enough money.
+				verifyEnoughMoney(SourcephoneNumber, amount);
+				//perform the transfer with the next two commands
+				System.out.println(this.services.getAccountByIban(SourceIban).getBalance());
 				this.sibs.transfer(SourceIban, TargetIban, amount);
+				this.sibs.processOperations();
+				System.out.println(this.services.getAccountByIban(SourceIban).getBalance());
+				if(this.services.getAccountByIban(SourceIban).getBalance() == balanceBeforeTransfer) {
+					/*sibs will undo all the operations if the source account has not enough money for
+					 * both transfer and commission. This means the money in the account before and after
+					 * transfer is the same, so it did not occur*/
+					throw new MBWayException("Not enough money");
+				}
 				return true;
 			} else {
 				return false;
@@ -98,7 +120,8 @@ public class MBWayModel {
 
 	private void verifyEnoughMoney(String phoneNumber, int amount) throws MBWayException {
 		if (this.services.getAccountByIban(this.mbWay.get(phoneNumber).getIban()).getBalance() < amount) {
-			throw new MBWayException("Oh no! One friend does not have money to pay!");
+			resetFriends();
+			throw new MBWayException("Oh no! Not enough money to perform the transfer. Please, isert friends again");
 		}
 	}
 
@@ -123,7 +146,20 @@ public class MBWayModel {
 	public void splitbill() throws SibsException, AccountException, OperationException, MBWayException {
 		HashMap<String, Integer> friends = this.mbWay.get(this.firstFriendPhoneNumber).getFriends();
 		for (String phoneNumber : friends.keySet()) {
-			this.mbWayTransfer(phoneNumber, this.firstFriendPhoneNumber, friends.get(phoneNumber));
+			if(phoneNumber != this.firstFriendPhoneNumber) {
+				this.mbWayTransfer(phoneNumber, this.firstFriendPhoneNumber, friends.get(phoneNumber));
+			}
+			
 		}
+		//reset split bill information
+		resetFriends();
+		
+	}
+	private void resetFriends() {
+		if(this.firstFriendPhoneNumber != null) {
+			this.mbWay.get(this.firstFriendPhoneNumber).getFriends().clear();
+			this.firstFriendPhoneNumber=null;
+		}
+		
 	}
 }
