@@ -56,6 +56,7 @@ public class TransferMethodTest {
 		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
 		// TODO como verifico que o estado da TransferOperation é o devido? nao consigo
 		// aceder
+		// TODO Resolvido com a ultima linha?
 		assertEquals(1000, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1000, this.services.getAccountByIban(targetIban).getBalance());
 		assertEquals(1, this.sibs.getNumberOfOperations());

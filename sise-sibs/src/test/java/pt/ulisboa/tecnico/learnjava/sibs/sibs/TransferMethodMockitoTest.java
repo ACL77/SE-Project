@@ -68,7 +68,6 @@ public class TransferMethodMockitoTest {
 		verify(serviceMock).deposit(this.targetIban, 100);
 		verify(serviceMock).withdraw(this.sourceIban, 100);
 		// verify of addOperations!?!
-
 		assertEquals(1, sibs.getNumberOfOperations());
 		assertEquals(100, sibs.getTotalValueOfOperations());
 		assertEquals(100, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
