@@ -1,12 +1,8 @@
 package pt.ulisboa.tecnico.learnjava.sibs.sibs;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.times;
 
 import org.junit.After;
 import org.junit.Before;
@@ -68,7 +64,12 @@ public class RetryStateMockitoTest {
 		sibs.processOperations();
 		
 		TransferOperation transfer= (TransferOperation) sibs.getOperation(0);
+		verify(serviceMock).withdraw(sourceIban, 100);
 		verify(serviceMock,times(3)).deposit(targetIban, 100);
+		verify(serviceMock,never()).withdraw(sourceIban, 6);
+		verify(serviceMock).deposit(sourceIban,100);
+		verify(serviceMock,never()).withdraw(targetIban,100);
+		verify(serviceMock,never()).deposit(sourceIban, 6);
 		assertTrue(transfer.getState() instanceof ERROR);
 	}
 	
@@ -89,6 +90,11 @@ public class RetryStateMockitoTest {
 		
 		TransferOperation transfer= (TransferOperation) sibs.getOperation(0);
 		verify(serviceMock,times(3)).withdraw(sourceIban, 100);
+		verify(serviceMock,never()).deposit(targetIban, 100);
+		verify(serviceMock,never()).withdraw(sourceIban, 6);
+		verify(serviceMock,never()).deposit(sourceIban,100);
+		verify(serviceMock,never()).withdraw(targetIban,100);
+		verify(serviceMock,never()).deposit(sourceIban, 6);
 		assertTrue(transfer.getState() instanceof ERROR);
 	}
 	
@@ -108,7 +114,12 @@ public class RetryStateMockitoTest {
 		sibs.processOperations();
 		
 		TransferOperation transfer= (TransferOperation) sibs.getOperation(0);
+		verify(serviceMock).withdraw(sourceIban, 100);
+		verify(serviceMock).deposit(targetIban, 100);
 		verify(serviceMock,times(3)).withdraw(sourceIban, 6);
+		verify(serviceMock).deposit(sourceIban,100);
+		verify(serviceMock).withdraw(targetIban,100);
+		verify(serviceMock,never()).deposit(sourceIban, 6);
 		assertTrue(transfer.getState() instanceof ERROR);
 	}
 	
