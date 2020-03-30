@@ -1,11 +1,10 @@
 package pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate;
 
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
-import pt.ulisboa.tecnico.learnjava.sibs.domain.StatesChain;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
 
 public class RETRY implements TransferOperationState {
-	private int count = 3;
+	private int count = 2;
 	private TransferOperationState previousState;
 
 	public RETRY(TransferOperationState previousState) {
@@ -16,7 +15,7 @@ public class RETRY implements TransferOperationState {
 	public void process(StatesChain state) throws AccountException, OperationException {
 		try {
 			state.setState(this.previousState);
-			state.process();
+			state.process(state.getServices());
 		} catch (Exception e) {
 			this.count--;
 			state.setState(this);

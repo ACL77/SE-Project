@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate;
 
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
-import pt.ulisboa.tecnico.learnjava.sibs.domain.StatesChain;
 
 public class DEPOSITED implements TransferOperationState {
 

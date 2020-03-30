@@ -1,10 +1,8 @@
-package pt.ulisboa.tecnico.learnjava.sibs.domain;
+package pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate;
 
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
-import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.REGISTERED;
-import pt.ulisboa.tecnico.learnjava.sibs.transferoperationstate.TransferOperationState;
 
 public class StatesChain {
 	private final String sourceIban;
@@ -22,7 +20,6 @@ public class StatesChain {
 		this.targetIban = targetIban;
 		this.value = value;
 		this.commission = commission;
-		this.services = new Services();
 		this.currentState = new REGISTERED();
 	}
 
@@ -30,8 +27,8 @@ public class StatesChain {
 		this.currentState = state;
 	}
 
-	public void process() throws AccountException, OperationException {
-
+	public void process(Services services) throws AccountException, OperationException {
+		this.services=services;
 		this.currentState.process(this);
 	}
 
@@ -66,5 +63,9 @@ public class StatesChain {
 	public TransferOperationState getCurrentState() {
 		return this.currentState;
 	}
-
+	
+	public Services getServices() {
+		return services;
+	}
+	
 }

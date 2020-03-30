@@ -18,7 +18,6 @@ public class CheckingAccount extends Account {
 	@Override
 	public void withdraw(int amount) throws AccountException {
 		if (amount > getBalance()) {
-			System.out.println("lululalala");
 			throw new AccountException();
 		}
 

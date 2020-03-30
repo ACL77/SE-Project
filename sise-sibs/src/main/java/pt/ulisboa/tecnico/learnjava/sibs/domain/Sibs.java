@@ -40,10 +40,10 @@ public class Sibs {
 						&& !(transfer.getStateContext().getCurrentState() instanceof CANCELLED)
 						&& !(transfer.getStateContext().getCurrentState() instanceof ERROR)) {
 					try {
-						transfer.process();
+						transfer.process(this.services);
 					} catch (Exception e) {
 						if (transfer.getStateContext().getCurrentState() instanceof RETRY) {
-							transfer.process();
+							transfer.process(this.services);
 						} else {
 							transfer.getStateContext().setState(new RETRY(transfer.getState()));
 						}

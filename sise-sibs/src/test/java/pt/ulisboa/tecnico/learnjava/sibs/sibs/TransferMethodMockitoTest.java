@@ -52,30 +52,6 @@ public class TransferMethodMockitoTest {
 	}
 
 	@Test
-	public void noFeeWithSameBank()
-			throws SibsException, AccountException, OperationException, BankException, ClientException {
-
-		Services serviceMock = mock(Services.class);
-
-		when(serviceMock.verifyAccountExistanceInBank(this.sourceIban)).thenReturn(true);
-		when(serviceMock.verifyAccountExistanceInBank(this.targetIban)).thenReturn(true);
-		when(serviceMock.verifySameBank(this.sourceIban, this.targetIban)).thenReturn(true);
-
-		Sibs sibs = new Sibs(100, serviceMock);
-		sibs.transfer(this.sourceIban, this.targetIban, 100);
-
-		// no other parameter inside verify is the same as times(1)
-		verify(serviceMock).deposit(this.targetIban, 100);
-		verify(serviceMock).withdraw(this.sourceIban, 100);
-		// verify of addOperations!?!
-		assertEquals(1, sibs.getNumberOfOperations());
-		assertEquals(100, sibs.getTotalValueOfOperations());
-		assertEquals(100, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
-		assertEquals(0, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
-
-	}
-
-	@Test
 	public void invalidAccounts()
 			throws ClientException, BankException, AccountException, SibsException, OperationException {
 
@@ -92,8 +68,11 @@ public class TransferMethodMockitoTest {
 		} catch (SibsException e) {
 
 		}
-		verify(serviceMock, never()).deposit(this.targetIban, 100);
-		verify(serviceMock, never()).withdraw(this.sourceIban, 100);
+		assertEquals(0, sibs.getNumberOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+		
+	
 	}
 
 	@Test
@@ -113,8 +92,9 @@ public class TransferMethodMockitoTest {
 		} catch (SibsException e) {
 
 		}
-		verify(serviceMock, never()).deposit(this.targetIban, 100);
-		verify(serviceMock, never()).withdraw(this.sourceIban, 100);
+		assertEquals(0, sibs.getNumberOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
 	}
 
 	@Test
@@ -134,59 +114,9 @@ public class TransferMethodMockitoTest {
 		} catch (SibsException e) {
 
 		}
-		verify(serviceMock, never()).deposit(this.targetIban, 100);
-		verify(serviceMock, never()).withdraw(this.sourceIban, 100);
-	}
-
-	@Test
-	public void feeFromSourceAccount() throws SibsException, AccountException, OperationException {
-
-		Services serviceMock = mock(Services.class);
-
-		when(serviceMock.verifyAccountExistanceInBank(this.sourceIban)).thenReturn(true);
-		when(serviceMock.verifyAccountExistanceInBank(this.targetIban)).thenReturn(true);
-		when(serviceMock.verifySameBank(this.sourceIban, this.targetIban)).thenReturn(false);
-
-		Sibs sibs = new Sibs(100, serviceMock);
-		Sibs obj = new Sibs(10, serviceMock);
-		obj.transfer(this.sourceIban, this.targetIban, 100);
-
-		verify(serviceMock).deposit(this.targetIban, 100);
-		verify(serviceMock).withdraw(this.sourceIban, 100);
-		verify(serviceMock).withdraw(this.sourceIban, 6);
-
-	}
-
-	@Test
-	public void noWithdrawWithFailedDepositSameBank() throws AccountException, SibsException, OperationException {
-		Services servicesMock = mock(Services.class);
-
-		when(servicesMock.verifyAccountExistanceInBank(this.sourceIban)).thenReturn(true);
-		when(servicesMock.verifyAccountExistanceInBank(this.targetIban)).thenReturn(true);
-		when(servicesMock.verifySameBank(this.sourceIban, this.targetIban)).thenReturn(true);
-		doThrow(new AccountException()).when(servicesMock).deposit(this.sourceIban, 100);
-
-		Sibs testSibs = new Sibs(10, servicesMock);
-		testSibs.transfer(this.sourceIban, this.targetIban, 100);
-
-		verify(servicesMock, never()).withdraw(this.targetIban, 100);
-
-	}
-
-	@Test
-	public void noWithdrawWithFailedDepositDifferentBanks() throws AccountException, SibsException, OperationException {
-		Services servicesMock = mock(Services.class);
-
-		when(servicesMock.verifyAccountExistanceInBank(this.sourceIban)).thenReturn(true);
-		when(servicesMock.verifyAccountExistanceInBank(this.targetIban)).thenReturn(true);
-		when(servicesMock.verifySameBank(this.sourceIban, this.targetIban)).thenReturn(false);
-		doThrow(new AccountException()).when(servicesMock).deposit(this.sourceIban, 100);
-
-		Sibs testSibs = new Sibs(10, servicesMock);
-		testSibs.transfer(this.sourceIban, this.targetIban, 100);
-
-		verify(servicesMock, never()).withdraw(this.targetIban, 100);
-
+		assertEquals(0, sibs.getNumberOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperations());
+		assertEquals(0, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
 	}
 
 	@After
