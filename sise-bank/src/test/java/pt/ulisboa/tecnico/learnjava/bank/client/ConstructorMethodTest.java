@@ -10,6 +10,8 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
 
@@ -30,7 +32,9 @@ public class ConstructorMethodTest {
 
 	@Test
 	public void success() throws ClientException {
-		Client client = new Client(this.bank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, AGE);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation(NIF, PHONE_NUMBER, ADDRESS, 33);		
+		Person person1 = new Person(FIRST_NAME, LAST_NAME,info1);		
+		Client client = new Client(this.bank, person1);
 
 		assertEquals(this.bank, client.getBank());
 		assertEquals(FIRST_NAME, client.getFirstName());
@@ -43,23 +47,33 @@ public class ConstructorMethodTest {
 
 	@Test(expected = ClientException.class)
 	public void negativeAge() throws ClientException {
-		new Client(this.bank, FIRST_NAME, LAST_NAME, "12345678A", PHONE_NUMBER, ADDRESS, -1);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation("12345678A", PHONE_NUMBER, ADDRESS, -1);		
+		Person person1 = new Person(FIRST_NAME, LAST_NAME,info1);		
+		new Client(this.bank, person1);
 	}
 
 	@Test(expected = ClientException.class)
 	public void no9DigitsNif() throws ClientException {
-		new Client(this.bank, FIRST_NAME, LAST_NAME, "12345678A", PHONE_NUMBER, ADDRESS, AGE);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation("12345678A", PHONE_NUMBER, ADDRESS, AGE);		
+		Person person1 = new Person(FIRST_NAME, LAST_NAME,info1);		
+		new Client(this.bank, person1);
 	}
 
 	@Test(expected = ClientException.class)
 	public void no9DigitsPhoneNumber() throws ClientException {
-		new Client(this.bank, FIRST_NAME, LAST_NAME, NIF, "A87654321", ADDRESS, AGE);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation(NIF, "A87654321", ADDRESS, 33);		
+		Person person1 = new Person(FIRST_NAME, LAST_NAME,info1);		
+		new Client(this.bank, person1);
 	}
 
 	public void twoClientsSameNif() throws ClientException {
-		new Client(this.bank, FIRST_NAME, LAST_NAME, NIF, "A87654321", ADDRESS, AGE);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation("A87654321", PHONE_NUMBER, ADDRESS, AGE);		
+		Person person1 = new Person(FIRST_NAME, LAST_NAME,info1);		
+		new Client(this.bank, person1);
 		try {
-			new Client(this.bank, FIRST_NAME, LAST_NAME, NIF, "A87654321", ADDRESS, AGE);
+			PersonComplemetarInformation info2 = new PersonComplemetarInformation("A87654321", PHONE_NUMBER, ADDRESS, AGE);		
+			Person person2 = new Person(FIRST_NAME, LAST_NAME,info2);		
+			new Client(this.bank, person2);
 			fail();
 		} catch (ClientException e) {
 			assertEquals(1, this.bank.getTotalNumberOfClients());

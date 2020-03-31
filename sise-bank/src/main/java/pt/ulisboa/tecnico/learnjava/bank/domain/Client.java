@@ -12,24 +12,14 @@ public class Client {
 	private final Set<Account> accounts = new HashSet<Account>();
 
 	private final Bank bank;
-	private final String firstName;
-	private final String lastName;
-	private final String nif;
-	private final String phoneNumber;
-	private final String address;
-	private int age;
+	private final Person person;
 
-	public Client(Bank bank, String firstName, String lastName, String nif, String phoneNumber, String address, int age)
+	public Client(Bank bank, Person person)
 			throws ClientException {
-		checkParameters(bank, nif, phoneNumber, age);
+		checkParameters(bank, person.getComplInfo().getNif(), person.getComplInfo().getPhoneNumber(), person.getComplInfo().getAge());
 
 		this.bank = bank;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.nif = nif;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
-		this.age = age;
+		this.person = person;
 
 		bank.addClient(this);
 	}
@@ -77,9 +67,9 @@ public class Client {
 	}
 
 	public void happyBirthDay() throws BankException, AccountException, ClientException {
-		this.age++;
+		this.person.getComplInfo().setAge(this.person.getComplInfo().getAge()+1);
 
-		if (this.age == 18) {
+		if (this.person.getComplInfo().getAge() == 18) {
 			Set<Account> accounts = new HashSet<Account>(this.accounts);
 			for (Account account : accounts) {
 				YoungAccount youngAccount = (YoungAccount) account;
@@ -101,31 +91,32 @@ public class Client {
 	}
 
 	public String getFirstName() {
-		return this.firstName;
+		return this.person.getFirstName();
 	}
 
 	public String getLastName() {
-		return this.lastName;
+		return this.person.getLastName();
 	}
 
 	public String getNif() {
-		return this.nif;
+		return this.person.getComplInfo().getNif();
 	}
 
 	public String getPhoneNumber() {
-		return this.phoneNumber;
+		return this.person.getComplInfo().getPhoneNumber();
 	}
 
 	public String getAddress() {
-		return this.address;
+		return this.person.getComplInfo().getAddress();
 	}
 
 	public int getAge() {
-		return this.age;
+		return this.person.getComplInfo().getAge();
 	}
 
 	public void setAge(int age) {
-		this.age = age;
+		this.person.getComplInfo().setAge(age);
+		
 	}
 
 }

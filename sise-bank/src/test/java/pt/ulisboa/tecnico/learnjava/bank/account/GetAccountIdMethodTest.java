@@ -10,6 +10,8 @@ import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank.AccountType;
 import pt.ulisboa.tecnico.learnjava.bank.domain.CheckingAccount;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.domain.SalaryAccount;
 import pt.ulisboa.tecnico.learnjava.bank.domain.SavingsAccount;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
@@ -27,7 +29,9 @@ public class GetAccountIdMethodTest {
 	public void setUp() throws AccountException, ClientException, BankException {
 		Bank bank = new Bank("CGD");
 
-		Client client = new Client(bank, "José", "Manuel", "123456789", "987654321", "Street", 33);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation("111111111", "222222222", "aqui", 33);
+		Person person1 = new Person("Joao", "Lourenco", info1);
+		Client client = new Client(bank, person1);
 
 		this.checking = new CheckingAccount(client, 100);
 		this.savings = new SavingsAccount(client, 100, 10);

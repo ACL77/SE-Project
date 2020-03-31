@@ -11,6 +11,8 @@ import org.junit.Test;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.CheckingAccount;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.domain.YoungAccount;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
@@ -28,7 +30,9 @@ public class UpgradeMethodTest {
 		this.services = new Services();
 		this.bank = new Bank("CGD");
 
-		this.youngClient = new Client(this.bank, "José", "Manuel", "123456780", "987654321", "Street", 17);
+		PersonComplemetarInformation info2 = new PersonComplemetarInformation("123456780", "987654321", "Street", 17);
+		Person person2 = new Person("José", "Manuel", info2);
+		this.youngClient = new Client(bank, person2);
 
 		this.young = (YoungAccount) this.services
 				.getAccountByIban(this.bank.createAccount(Bank.AccountType.YOUNG, this.youngClient, 100, 0));
