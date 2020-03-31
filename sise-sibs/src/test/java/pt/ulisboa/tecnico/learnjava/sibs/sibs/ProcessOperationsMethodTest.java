@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
 import pt.ulisboa.tecnico.learnjava.bank.services.Services;
+import pt.ulisboa.tecnico.learnjava.sibs.domain.Operation;
 import pt.ulisboa.tecnico.learnjava.sibs.domain.Sibs;
 import pt.ulisboa.tecnico.learnjava.sibs.domain.TransferOperation;
 import pt.ulisboa.tecnico.learnjava.sibs.exceptions.OperationException;
@@ -106,6 +107,25 @@ public class ProcessOperationsMethodTest {
 		assertTrue(secondOperation.getStateContext().getCurrentState() instanceof CANCELLED);
 		assertEquals(894, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
+	}
+
+	@Test
+	public void moneyTransferedWhenTransferoperationStateIsCompleted()
+			throws BankException, AccountException, SibsException, OperationException, ClientException {
+		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
+		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
+
+		this.sibs.transfer(sourceIban, targetIban, 100);
+		this.sibs.processOperations();
+
+		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
+		assertEquals(894/* 900 */, this.services.getAccountByIban(sourceIban).getBalance());
+		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
+		assertEquals(1, this.sibs.getNumberOfOperations());
+		assertEquals(100, this.sibs.getTotalValueOfOperations());
+		assertEquals(100, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+		assertTrue(testOperation.getStateContext().getCurrentState() instanceof COMPLETED);
 	}
 
 	@After
