@@ -7,7 +7,7 @@ public class COMPLETED implements TransferOperationState {
 
 	@Override
 	public void process(StatesChain state) throws AccountException {
-		// TODO do nothing!? stays COMPLETED
+		// do nothing. stays COMPLETED
 
 	}
 
