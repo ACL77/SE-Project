@@ -68,7 +68,6 @@ public class MBWayPattern {
 			
 			
 			String commandType = parameters[0];
-			//System.out.println(commandType);
 
 			switch (commandType) {
 			case "exit":
@@ -111,5 +110,4 @@ public class MBWayPattern {
 
 	}
 
-	// TODO TEST
 }

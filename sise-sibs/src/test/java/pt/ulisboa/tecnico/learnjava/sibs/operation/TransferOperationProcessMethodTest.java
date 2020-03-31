@@ -43,7 +43,7 @@ public class TransferOperationProcessMethodTest {
 	@Before
 	public void setUp() throws BankException, AccountException, ClientException {
 		this.services = new Services();
-		// this.sibs = new Sibs(100, services);
+	
 		this.sourceBank = new Bank("CGD");
 		this.targetBank = new Bank("BPI");
 		this.sourceClient = new Client(this.sourceBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);

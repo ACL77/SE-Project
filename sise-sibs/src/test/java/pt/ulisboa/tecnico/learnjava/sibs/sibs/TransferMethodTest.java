@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
@@ -40,8 +42,14 @@ public class TransferMethodTest {
 		this.sibs = new Sibs(100, this.services);
 		this.sourceBank = new Bank("CGD");
 		this.targetBank = new Bank("BPI");
-		this.sourceClient = new Client(this.sourceBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
-		this.targetClient = new Client(this.targetBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation("123456789", "987654321", "Street", 33);
+		PersonComplemetarInformation info2 = new PersonComplemetarInformation("123456780", "987654321", "Street", 20);
+		
+		Person person1 = new Person("José", "Manuel",info1);
+		Person person2 = new Person("José", "Manuel", info2);
+		
+		this.sourceClient = new Client(sourceBank, person1);
+		this.targetClient = new Client(targetBank, person2);
 	}
 
 	@Test
@@ -53,9 +61,7 @@ public class TransferMethodTest {
 		this.sibs.transfer(sourceIban, targetIban, 100);
 
 		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
-		// TODO como verifico que o estado da TransferOperation � o devido? nao consigo
-		// aceder
-		// TODO Resolvido com a ultima linha?
+		
 		assertEquals(1000, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1000, this.services.getAccountByIban(targetIban).getBalance());
 		assertEquals(1, this.sibs.getNumberOfOperations());
@@ -65,7 +71,8 @@ public class TransferMethodTest {
 		assertTrue(testOperation.getStateContext().getCurrentState() instanceof REGISTERED);
 	}
 
-//	@Test
+//TODO
+	//	@Test
 //	public void moneyTransferedWhenTransferoperationStateIsCompleted() throws BankException, AccountException, SibsException, OperationException, ClientException {
 //		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
 //		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);

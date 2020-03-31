@@ -105,7 +105,6 @@ public class ProcessOperationsMethodTest {
 		this.sibs.processOperations();
 		TransferOperation firstOperation = (TransferOperation) this.sibs.getOperation(0);
 		TransferOperation secondOperation = (TransferOperation) this.sibs.getOperation(1);
-		// TODO
 
 		assertEquals(this.sibs.getTotalValueOfOperations(), 200);
 		assertEquals(this.sibs.getNumberOfOperations(), 2);

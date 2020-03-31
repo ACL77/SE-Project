@@ -7,13 +7,13 @@ public class CANCELLED implements TransferOperationState {
 
 	@Override
 	public void process(StatesChain state) throws AccountException, OperationException {
-		// TODO Do nothing?? Stays in CANCELED mode...
+		// Do nothing. Stays in CANCELED mode...
 
 	}
 
 	@Override
 	public void cancel(StatesChain state) throws OperationException {
-		// TODO Do nothing?? Stays in CANCELED mode...
+		// Do nothing. Stays in CANCELED mode...
 
 	}
 

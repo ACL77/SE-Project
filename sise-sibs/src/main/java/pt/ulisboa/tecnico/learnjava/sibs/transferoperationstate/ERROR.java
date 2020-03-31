@@ -7,13 +7,13 @@ public class ERROR implements TransferOperationState {
 
 	@Override
 	public void process(StatesChain state) throws AccountException, OperationException {
-		// TODO does nothing?! stays as ERROR
+		// TDo nothing. stays as ERROR
 
 	}
 
 	@Override
 	public void cancel(StatesChain state) throws OperationException, AccountException {
-		// TODO does nothing?! stays as ERROR
+		// Do nothing. stays as ERROR
 
 	}
 
