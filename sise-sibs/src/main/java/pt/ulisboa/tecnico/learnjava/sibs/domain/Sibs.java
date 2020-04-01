@@ -32,6 +32,7 @@ public class Sibs {
 		addOperation(Operation.OPERATION_TRANSFER, sourceIban, targetIban, amount);
 	}
 
+	//Refactor for Write Simple Units of Code - line 36 to line 63.
 	public void processOperations() throws SibsException, AccountException, OperationException {
 		for (Operation operation : this.operations) {
 			if (operation != null && operation.getType().equals(Operation.OPERATION_TRANSFER)) {

@@ -68,7 +68,6 @@ public class MBWayModel {
 	// Refactor for Write Short Units of code
 	public Boolean mbWayTransfer(String SourcephoneNumber, String targetPhoneNumber, int amount)
 			throws SibsException, AccountException, OperationException, MBWayException {
-		// int balanceBeforeTransfer;
 		if (this.mbWay.containsKey(SourcephoneNumber) && this.mbWay.containsKey(targetPhoneNumber)
 				&& mbWay.get(SourcephoneNumber).isValidated() && mbWay.get(targetPhoneNumber).isValidated()) {
 			String SourceIban = mbWay.get(SourcephoneNumber).getIban();
