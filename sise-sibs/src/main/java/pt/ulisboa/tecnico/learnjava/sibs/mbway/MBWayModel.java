@@ -64,14 +64,14 @@ public class MBWayModel {
 			String SourceIban = mbWay.get(SourcephoneNumber).getIban();
 			String TargetIban = mbWay.get(targetPhoneNumber).getIban();
 			// perform transfer if ibans really exist in banks
-			return wasTranasferSuccessfull(SourceIban, TargetIban, amount);
+			return wasTransferSuccessfull(SourceIban, TargetIban, amount);
 
 		} else {
 			throw new MBWayException("At least one of the accounts was not validated");
 		}
 	}
 	
-	private Boolean wasTranasferSuccessfull(String SourceIban, String TargetIban, int amount) 
+	private Boolean wasTransferSuccessfull(String SourceIban, String TargetIban, int amount) 
 			throws SibsException, AccountException, OperationException, MBWayException {
 		if ((SourceIban != null) && (TargetIban != null)) {
 			int balanceBeforeTransfer = this.services.getAccountByIban(SourceIban).getBalance();
