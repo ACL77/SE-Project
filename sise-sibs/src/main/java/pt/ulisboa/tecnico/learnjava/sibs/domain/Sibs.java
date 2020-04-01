@@ -37,7 +37,7 @@ public class Sibs {
 			if (operation != null && operation.getType().equals(Operation.OPERATION_TRANSFER)) {
 				/*cycle for each operation so that it can be finalized:
 				*if operation was not canceled it will reach either 
-				*COMPLETED or ERROR state */ 
+				*COMPLETED or ERROR state. */ 
 				finalizeOperations(operation);
 			}
 		}
