@@ -55,10 +55,10 @@ public class MBWayModel {
 	}
 
 	// returns true if transfer was performed successfully
-	//Refactor for Write Short Units of code
+	// Refactor for Write Short Units of code
 	public Boolean mbWayTransfer(String SourcephoneNumber, String targetPhoneNumber, int amount)
 			throws SibsException, AccountException, OperationException, MBWayException {
-		//int balanceBeforeTransfer;
+		// int balanceBeforeTransfer;
 		if (this.mbWay.containsKey(SourcephoneNumber) && this.mbWay.containsKey(targetPhoneNumber)
 				&& mbWay.get(SourcephoneNumber).isValidated() && mbWay.get(targetPhoneNumber).isValidated()) {
 			String SourceIban = mbWay.get(SourcephoneNumber).getIban();
@@ -70,23 +70,25 @@ public class MBWayModel {
 			throw new MBWayException("At least one of the accounts was not validated");
 		}
 	}
-	
-	private Boolean wasTranasferSuccessfull(String SourceIban, String TargetIban, int amount) 
+
+	private Boolean wasTranasferSuccessfull(String SourceIban, String TargetIban, int amount)
 			throws SibsException, AccountException, OperationException, MBWayException {
 		if ((SourceIban != null) && (TargetIban != null)) {
 			int balanceBeforeTransfer = this.services.getAccountByIban(SourceIban).getBalance();
 			// perform the transfer with the next two commands
 			this.sibs.transfer(SourceIban, TargetIban, amount);
 			this.sibs.processOperations();
-			//throws exception if the account did not have enough money for comission OR returns true, meaning it was successful
+			// throws exception if the account did not have enough money for comission OR
+			// returns true, meaning it was successful
 			return verifyEnoughMoneyForTransferAndComission(SourceIban, balanceBeforeTransfer);
-			
+
 		} else {
 			return false;
 		}
 	}
-	
-	private Boolean verifyEnoughMoneyForTransferAndComission(String iban, int balanceBeforeTransfer) throws MBWayException {
+
+	private Boolean verifyEnoughMoneyForTransferAndComission(String iban, int balanceBeforeTransfer)
+			throws MBWayException {
 		if (this.services.getAccountByIban(iban).getBalance() == balanceBeforeTransfer) {
 			/*
 			 * sibs will undo all the operations if the source account has not enough money
@@ -190,5 +192,9 @@ public class MBWayModel {
 		}
 
 	}
-	
+
+	public static HashMap<String, MBWayAccount> getMbWay() {
+		return mbWay;
+	}
+
 }
