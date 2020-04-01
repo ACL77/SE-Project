@@ -84,6 +84,7 @@ public class MBWayPattern {
 			}
 		}
 		
+		
 		newScanner.close();
 
 	}
