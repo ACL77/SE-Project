@@ -35,19 +35,27 @@ public class Sibs {
 	public void processOperations() throws SibsException, AccountException, OperationException {
 		for (Operation operation : this.operations) {
 			if (operation != null && operation.getType().equals(Operation.OPERATION_TRANSFER)) {
-				TransferOperation transfer = (TransferOperation) operation;
-				while (!(transfer.getStateContext().getCurrentState() instanceof COMPLETED)
-						&& !(transfer.getStateContext().getCurrentState() instanceof CANCELLED)
-						&& !(transfer.getStateContext().getCurrentState() instanceof ERROR)) {
-					try {
-						transfer.process(this.services);
-					} catch (Exception e) {
-						if (transfer.getStateContext().getCurrentState() instanceof RETRY) {
-							transfer.process(this.services);
-						} else {
-							transfer.getStateContext().setState(new RETRY(transfer.getState()));
-						}
-					}
+				/*cycle for each operation so that it can be finalized:
+				*if operation was not canceled it will reach either 
+				*COMPLETED or ERROR state. */ 
+				finalizeOperations(operation);
+			}
+		}
+	}
+	
+	private void finalizeOperations(Operation operation) 
+			throws SibsException, AccountException, OperationException {
+		TransferOperation transfer = (TransferOperation) operation;
+		while (!(transfer.getStateContext().getCurrentState() instanceof COMPLETED)
+				&& !(transfer.getStateContext().getCurrentState() instanceof CANCELLED)
+				&& !(transfer.getStateContext().getCurrentState() instanceof ERROR)) {
+			try {
+				transfer.process(this.services);
+			} catch (Exception e) {
+				if (transfer.getStateContext().getCurrentState() instanceof RETRY) {
+					transfer.process(this.services);
+				} else {
+					transfer.getStateContext().setState(new RETRY(transfer.getState()));
 				}
 			}
 		}
