@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
@@ -38,8 +40,12 @@ public class CancelOperationMethodTest {
 		this.sibs = new Sibs(100, this.services);
 		this.sourceBank = new Bank("CGD");
 		this.targetBank = new Bank("BPI");
-		this.sourceClient = new Client(this.sourceBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
-		this.targetClient = new Client(this.targetBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation(NIF, PHONE_NUMBER, ADDRESS, 33);
+		Person person1 = new Person(FIRST_NAME, LAST_NAME, info1);
+		PersonComplemetarInformation info2 = new PersonComplemetarInformation(NIF, PHONE_NUMBER, ADDRESS, 22);
+		Person person2 = new Person(FIRST_NAME, LAST_NAME, info2);
+		this.sourceClient = new Client(this.sourceBank, person1);
+		this.targetClient = new Client(this.targetBank, person2);
 	}
 
 	@Test

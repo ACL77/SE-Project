@@ -9,6 +9,8 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
 import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
+import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
+import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
@@ -43,11 +45,15 @@ public class TransferOperationProcessMethodTest {
 	@Before
 	public void setUp() throws BankException, AccountException, ClientException {
 		this.services = new Services();
-	
+
 		this.sourceBank = new Bank("CGD");
 		this.targetBank = new Bank("BPI");
-		this.sourceClient = new Client(this.sourceBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 33);
-		this.targetClient = new Client(this.targetBank, FIRST_NAME, LAST_NAME, NIF, PHONE_NUMBER, ADDRESS, 22);
+		PersonComplemetarInformation info1 = new PersonComplemetarInformation(NIF, PHONE_NUMBER, ADDRESS, 33);
+		Person person1 = new Person(FIRST_NAME, LAST_NAME, info1);
+		PersonComplemetarInformation info2 = new PersonComplemetarInformation(NIF, PHONE_NUMBER, ADDRESS, 22);
+		Person person2 = new Person(FIRST_NAME, LAST_NAME, info2);
+		this.sourceClient = new Client(this.sourceBank, person1);
+		this.targetClient = new Client(this.targetBank, person2);
 		this.sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
 		this.targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
 		this.zeroSourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 0, 0);
@@ -68,7 +74,7 @@ public class TransferOperationProcessMethodTest {
 	public void confirmOperationWithdrawnState() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof WITHDRAWN);
 		assertEquals(900, this.services.getAccountByIban(this.sourceIban).getBalance());
@@ -79,8 +85,8 @@ public class TransferOperationProcessMethodTest {
 	public void confirmOperationDepositedState() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof DEPOSITED);
 		assertEquals(900, this.services.getAccountByIban(this.sourceIban).getBalance());
@@ -91,9 +97,9 @@ public class TransferOperationProcessMethodTest {
 	public void confirmOperationCompletedState() throws OperationException, SibsException, AccountException {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
-		transferOperation.process(services);
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof COMPLETED);
 		assertEquals(894, this.services.getAccountByIban(this.sourceIban).getBalance());
@@ -105,11 +111,11 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
 		// REGISTERED -> WITHDRAWN
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// WITHDRAWN -> DEPOSITED
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// DEPOSITED -> COMPLETED
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		transferOperation.cancel();
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof COMPLETED);
 		assertEquals(894, this.services.getAccountByIban(this.sourceIban).getBalance());
@@ -132,7 +138,7 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
 		// REGISTERED -> WITHDRAWN
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		transferOperation.cancel();
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof CANCELLED);
@@ -145,9 +151,9 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
 		// REGISTERED -> WITHDRAWN
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// WITHDRAWN -> DEPOSITED
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		transferOperation.cancel();
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof CANCELLED);
@@ -160,7 +166,7 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
 		transferOperation.cancel();
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof CANCELLED);
 		assertEquals(1000, this.services.getAccountByIban(this.sourceIban).getBalance());
 		assertEquals(1000, this.services.getAccountByIban(this.targetIban).getBalance());
@@ -183,12 +189,12 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.sourceIban, this.targetIban, 100);
 		// REGISTERED -> WITHDRAWN
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// WITHDRAWN -> DEPOSITED
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// DEPOSITED -> COMPLETED
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof COMPLETED);
 		assertEquals(894, this.services.getAccountByIban(this.sourceIban).getBalance());
@@ -200,11 +206,11 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
 		// 3 times to RETRY
-		transferOperation.process(services);
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 		// reach ERROR
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof ERROR);
 		assertEquals(0, this.services.getAccountByIban(this.zeroSourceIban).getBalance());
@@ -216,13 +222,13 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
 		// 3 times to RETRY
-		transferOperation.process(services);
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 		// reach ERROR
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// try to process ERROR
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 
 		assertTrue(transferOperation.getStateContext().getCurrentState() instanceof ERROR);
 		assertEquals(0, this.services.getAccountByIban(this.zeroSourceIban).getBalance());
@@ -234,11 +240,11 @@ public class TransferOperationProcessMethodTest {
 
 		TransferOperation transferOperation = new TransferOperation(this.zeroSourceIban, this.targetIban, 100);
 		// 3 times to RETRY
-		transferOperation.process(services);
-		transferOperation.process(services);
-		transferOperation.process(services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
+		transferOperation.process(this.services);
 		// reach ERROR
-		transferOperation.process(services);
+		transferOperation.process(this.services);
 		// try to cancel ERROR
 		transferOperation.cancel();
 
