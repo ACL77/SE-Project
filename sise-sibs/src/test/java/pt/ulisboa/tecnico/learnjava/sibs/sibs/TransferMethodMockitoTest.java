@@ -2,10 +2,7 @@ package pt.ulisboa.tecnico.learnjava.sibs.sibs;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import org.junit.After;
@@ -49,12 +46,12 @@ public class TransferMethodMockitoTest {
 		this.targetBank = new Bank("BPI");
 		PersonComplemetarInformation info1 = new PersonComplemetarInformation("123456789", "987654321", "Street", 33);
 		PersonComplemetarInformation info2 = new PersonComplemetarInformation("123456780", "987654321", "Street", 20);
-		
-		Person person1 = new Person("José", "Manuel",info1);
+
+		Person person1 = new Person("José", "Manuel", info1);
 		Person person2 = new Person("José", "Manuel", info2);
-		
-		this.sourceClient = new Client(sourceBank, person1);
-		this.targetClient = new Client(targetBank, person2);
+
+		this.sourceClient = new Client(this.sourceBank, person1);
+		this.targetClient = new Client(this.targetBank, person2);
 		this.sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
 		this.targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
 	}
@@ -79,8 +76,7 @@ public class TransferMethodMockitoTest {
 		assertEquals(0, sibs.getNumberOfOperations());
 		assertEquals(0, sibs.getTotalValueOfOperations());
 		assertEquals(0, sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
-		
-	
+
 	}
 
 	@Test

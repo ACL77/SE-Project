@@ -53,6 +53,8 @@ public class TransferMethodTest {
 	}
 
 	@Test
+	// asserts the creation of the tharsfer operation and evaluates that no money
+	// was yet trasfered because there i't any invokation of the process method
 	public void createTransferOperation()
 			throws BankException, AccountException, SibsException, OperationException, ClientException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
