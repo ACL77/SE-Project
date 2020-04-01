@@ -65,4 +65,6 @@ public class MBWayController {
 		this.model.splitbill();
 		this.view.successSplitBill();
 	}
+	
+	
 }
