@@ -30,9 +30,19 @@ public class MBWayModel {
 		if (this.mbWay.containsKey(phoneNumber)) {
 			throw new MBWayException("The phone is already associated with an account!");
 		}
+		verificateIBAN(iban);
 		MBWayModel.mbWay.put(phoneNumber, new MBWayAccount(iban));
 		return mbWay.get(phoneNumber).getCode();
 
+	}
+
+	// IBAN verification
+	private void verificateIBAN(String iban) throws MBWayException {
+		for (String phoneNumber : this.mbWay.keySet()) {
+			if (this.mbWay.get(phoneNumber).getIban() == iban) {
+				throw new MBWayException("This IBAN is aready associated with another number.");
+			}
+		}
 	}
 
 	/*

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class MBWayAccount {
 
-	private Boolean isValidated;
+	private Boolean isValidated = false;
 	private String Iban;
 	private final String code;
 	private HashMap<String, Integer> friends = new HashMap<String, Integer>();
