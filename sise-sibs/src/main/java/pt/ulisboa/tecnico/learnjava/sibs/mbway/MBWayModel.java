@@ -55,38 +55,47 @@ public class MBWayModel {
 	}
 
 	// returns true if transfer was performed successfully
+	//Refactor for Write Short Units of code
 	public Boolean mbWayTransfer(String SourcephoneNumber, String targetPhoneNumber, int amount)
 			throws SibsException, AccountException, OperationException, MBWayException {
-		int balanceBeforeTransfer;
+		//int balanceBeforeTransfer;
 		if (this.mbWay.containsKey(SourcephoneNumber) && this.mbWay.containsKey(targetPhoneNumber)
 				&& mbWay.get(SourcephoneNumber).isValidated() && mbWay.get(targetPhoneNumber).isValidated()) {
 			String SourceIban = mbWay.get(SourcephoneNumber).getIban();
 			String TargetIban = mbWay.get(targetPhoneNumber).getIban();
-			// perform transfer if
-			if ((SourceIban != null) && (TargetIban != null)) {
-				balanceBeforeTransfer = this.services.getAccountByIban(SourceIban).getBalance();
-				// Exception thrown if there is no enough money.
-				verifyEnoughMoney(SourcephoneNumber, amount);
-				// perform the transfer with the next two commands
-				System.out.println(this.services.getAccountByIban(SourceIban).getBalance());
-				this.sibs.transfer(SourceIban, TargetIban, amount);
-				this.sibs.processOperations();
-				System.out.println(this.services.getAccountByIban(SourceIban).getBalance());
-				if (this.services.getAccountByIban(SourceIban).getBalance() == balanceBeforeTransfer) {
-					/*
-					 * sibs will undo all the operations if the source account has not enough money
-					 * for both transfer and commission. This means the money in the account before
-					 * and after transfer is the same, so it did not occur
-					 */
-					throw new MBWayException("Not enough money");
-				}
-				return true;
-			} else {
-				return false;
-			}
+			// perform transfer if ibans really exist in banks
+			return wasTranasferSuccessfull(SourceIban, TargetIban, amount);
+
 		} else {
 			throw new MBWayException("At least one of the accounts was not validated");
 		}
+	}
+	
+	private Boolean wasTranasferSuccessfull(String SourceIban, String TargetIban, int amount) 
+			throws SibsException, AccountException, OperationException, MBWayException {
+		if ((SourceIban != null) && (TargetIban != null)) {
+			int balanceBeforeTransfer = this.services.getAccountByIban(SourceIban).getBalance();
+			// perform the transfer with the next two commands
+			this.sibs.transfer(SourceIban, TargetIban, amount);
+			this.sibs.processOperations();
+			//throws exception if the account did not have enough money for comission OR returns true, meaning it was successful
+			return verifyEnoughMoneyForTransferAndComission(SourceIban, balanceBeforeTransfer);
+			
+		} else {
+			return false;
+		}
+	}
+	
+	private Boolean verifyEnoughMoneyForTransferAndComission(String iban, int balanceBeforeTransfer) throws MBWayException {
+		if (this.services.getAccountByIban(iban).getBalance() == balanceBeforeTransfer) {
+			/*
+			 * sibs will undo all the operations if the source account has not enough money
+			 * for both transfer and commission. This means the money in the account before
+			 * and after transfer is the same, so it did not occur
+			 */
+			throw new MBWayException("Not enough money");
+		}
+		return true;
 	}
 
 	/* verifies if the number of frinds is correct */

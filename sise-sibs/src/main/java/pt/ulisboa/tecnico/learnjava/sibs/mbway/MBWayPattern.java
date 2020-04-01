@@ -25,6 +25,7 @@ public class MBWayPattern {
 		return Integer.parseInt(string);
 	}
 
+	//Refactor for Write Short Units of code
 	public static void main(String[] args)
 			throws MBWayException, SibsException, AccountException, OperationException, BankException, ClientException {
 		Services services = new Services();
