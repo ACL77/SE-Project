@@ -44,16 +44,16 @@ public class TransferMethodTest {
 		this.targetBank = new Bank("BPI");
 		PersonComplemetarInformation info1 = new PersonComplemetarInformation("123456789", "987654321", "Street", 33);
 		PersonComplemetarInformation info2 = new PersonComplemetarInformation("123456780", "987654321", "Street", 20);
-		
-		Person person1 = new Person("José", "Manuel",info1);
+
+		Person person1 = new Person("José", "Manuel", info1);
 		Person person2 = new Person("José", "Manuel", info2);
-		
-		this.sourceClient = new Client(sourceBank, person1);
-		this.targetClient = new Client(targetBank, person2);
+
+		this.sourceClient = new Client(this.sourceBank, person1);
+		this.targetClient = new Client(this.targetBank, person2);
 	}
 
 	@Test
-	public void createTransferOperationWithNoMoneyTransfer()
+	public void createTransferOperation()
 			throws BankException, AccountException, SibsException, OperationException, ClientException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
 		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
@@ -61,7 +61,8 @@ public class TransferMethodTest {
 		this.sibs.transfer(sourceIban, targetIban, 100);
 
 		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
-		
+
+		// the money isn't yet tranfered between accounts
 		assertEquals(1000, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1000, this.services.getAccountByIban(targetIban).getBalance());
 		assertEquals(1, this.sibs.getNumberOfOperations());
@@ -71,23 +72,42 @@ public class TransferMethodTest {
 		assertTrue(testOperation.getStateContext().getCurrentState() instanceof REGISTERED);
 	}
 
-//TODO
-	//	@Test
-//	public void moneyTransferedWhenTransferoperationStateIsCompleted() throws BankException, AccountException, SibsException, OperationException, ClientException {
-//		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
-//		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
-//
-//		this.sibs.transfer(sourceIban, targetIban, 100);
-//		this.sibs.processOperations();
-//
-//		//TODO como verifico que o estado da TransferOperation � o devido? nao consigo aceder
-//		assertEquals(894/*900*/, this.services.getAccountByIban(sourceIban).getBalance());
-//		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
-//		assertEquals(1, this.sibs.getNumberOfOperations());
-//		assertEquals(100, this.sibs.getTotalValueOfOperations());
-//		assertEquals(100, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
-//		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
-//	}
+	@Test(expected = Exception.class)
+	public void createTransferInvalidSourceAccount()
+			throws BankException, AccountException, SibsException, OperationException, ClientException {
+		// just an invalid example string as IBAN
+		String sourceIban = "invalid";
+		String targetIban = this.targetBank.createAccount(Bank.AccountType.CHECKING, this.targetClient, 1000, 0);
+
+		this.sibs.transfer(sourceIban, targetIban, 100);
+
+		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
+
+		assertEquals(1000, this.services.getAccountByIban(targetIban).getBalance());
+		assertEquals(0, this.sibs.getNumberOfOperations());
+		assertEquals(0, this.sibs.getTotalValueOfOperations());
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+
+	}
+
+	@Test(expected = Exception.class)
+	public void createTransferInvalidTargetAccount()
+			throws BankException, AccountException, SibsException, OperationException, ClientException {
+		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
+		// just an invalid example string as IBAN
+		String targetIban = "invalid";
+
+		this.sibs.transfer(sourceIban, targetIban, 100);
+
+		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
+
+		assertEquals(1000, this.services.getAccountByIban(sourceIban).getBalance());
+		assertEquals(0, this.sibs.getNumberOfOperations());
+		assertEquals(0, this.sibs.getTotalValueOfOperations());
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_TRANSFER));
+		assertEquals(0, this.sibs.getTotalValueOfOperationsForType(Operation.OPERATION_PAYMENT));
+	}
 
 	@After
 	public void tearDown() {
