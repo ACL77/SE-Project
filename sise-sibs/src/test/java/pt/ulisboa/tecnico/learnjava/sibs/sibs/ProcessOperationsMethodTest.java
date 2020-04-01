@@ -52,6 +52,7 @@ public class ProcessOperationsMethodTest {
 	}
 
 	@Test
+	// test processing different operations
 	public void processDifferentOperations()
 			throws BankException, AccountException, ClientException, SibsException, OperationException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
@@ -73,6 +74,7 @@ public class ProcessOperationsMethodTest {
 	}
 
 	@Test
+	// try to process different operations
 	public void processCanceledOperations()
 			throws BankException, AccountException, ClientException, SibsException, OperationException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
@@ -94,6 +96,7 @@ public class ProcessOperationsMethodTest {
 	}
 
 	@Test
+	// try to process one canceled operation
 	public void processErrorOperations()
 			throws BankException, AccountException, ClientException, SibsException, OperationException {
 		String sourceIban = this.sourceBank.createAccount(Bank.AccountType.CHECKING, this.sourceClient, 1000, 0);
@@ -124,7 +127,7 @@ public class ProcessOperationsMethodTest {
 		this.sibs.processOperations();
 
 		TransferOperation testOperation = (TransferOperation) this.sibs.getOperation(0);
-		assertEquals(894/* 900 */, this.services.getAccountByIban(sourceIban).getBalance());
+		assertEquals(894, this.services.getAccountByIban(sourceIban).getBalance());
 		assertEquals(1100, this.services.getAccountByIban(targetIban).getBalance());
 		assertEquals(1, this.sibs.getNumberOfOperations());
 		assertEquals(100, this.sibs.getTotalValueOfOperations());

@@ -2,10 +2,6 @@ package pt.ulisboa.tecnico.learnjava.sibs.mbway;
 
 import java.util.Scanner;
 
-import pt.ulisboa.tecnico.learnjava.bank.domain.Bank;
-import pt.ulisboa.tecnico.learnjava.bank.domain.Client;
-import pt.ulisboa.tecnico.learnjava.bank.domain.Person;
-import pt.ulisboa.tecnico.learnjava.bank.domain.PersonComplemetarInformation;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.AccountException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.BankException;
 import pt.ulisboa.tecnico.learnjava.bank.exceptions.ClientException;
@@ -25,16 +21,16 @@ public class MBWayPattern {
 		return Integer.parseInt(string);
 	}
 
-	//Refactor for Write Short Units of code
+	// Refactor for Write Short Units of code
 	public static void main(String[] args)
 			throws MBWayException, SibsException, AccountException, OperationException, BankException, ClientException {
 		Services services = new Services();
 		new Sibs(100, services);
-		
+
 		MBWayModel model = new MBWayModel();
 		MBWayView view = new MBWayView();
 		MBWayController controller = new MBWayController(model, view);
-		
+
 		Scanner newScanner = new Scanner(System.in);
 		System.out.println("Enter the command:");
 		boolean running = true;
@@ -42,49 +38,51 @@ public class MBWayPattern {
 		while (running) {
 
 			String newCommand = newScanner.nextLine();
-			String[] parameters=null;
+			String[] parameters = null;
 			try {
 				parameters = newCommand.split(" ");
-			}catch(Exception e) {
+			} catch (Exception e) {
 				System.out.println("Wrong command. Try again");
 			}
-			
-			
+
 			String commandType = parameters[0];
+			try {
+				switch (commandType) {
+				case "exit":
+					System.out.println("The programm has terminated.");
+					running = false;
+					break;
 
-			switch (commandType) {
-			case "exit":
-				System.out.println("The programm has terminated.");
-				running = false;
-				break;
+				case "associate-mbway":
+					controller.associateMBWay(parameters[1], parameters[2]);
+					break;
 
-			case "associate-mbway":
-				controller.associateMBWay(parameters[1], parameters[2]);
-				break;
+				case "confirm-mbway":
+					controller.confirmMBWay(parameters[1], parameters[2]);
+					break;
 
-			case "confirm-mbway":
-				controller.confirmMBWay(parameters[1], parameters[2]);
-				break;
+				case "mbway-transfer":
+					controller.mbWayTransfer(parameters[1], parameters[2], stringToNumber(parameters[3]));
+					break;
 
-			case "mbway-transfer":
-				controller.mbWayTransfer(parameters[1], parameters[2], stringToNumber(parameters[3]));
-				break;
+				case "friend":
+					controller.addFriend(parameters[1], stringToNumber(parameters[2]));
+					break;
 
-			case "friend":
-				controller.addFriend(parameters[1], stringToNumber(parameters[2]));
-				break;
+				case "mbway-split-bill":
+					controller.splitBill(stringToNumber(parameters[1]), stringToNumber(parameters[2]));
+					break;
 
-			case "mbway-split-bill":
-				controller.splitBill(stringToNumber(parameters[1]), stringToNumber(parameters[2]));
-				break;
+				default:
+					System.out.println("There is no command for your request!");
+					break;
 
-			default:
-				System.out.println("There is no command for your request!");
-				break;
-
+				}
+			} catch (ArrayIndexOutOfBoundsException e) {
+				System.out.println("Check the input again.");
 			}
 		}
-		
+
 		newScanner.close();
 
 	}

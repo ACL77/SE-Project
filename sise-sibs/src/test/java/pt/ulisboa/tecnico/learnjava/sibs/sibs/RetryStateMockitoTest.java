@@ -57,6 +57,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verrify that the transfer is in the ERROR state after 3 retries after faling
+	// in the deposit
 	public void invalidDepositRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -73,6 +75,7 @@ public class RetryStateMockitoTest {
 
 		TransferOperation transfer = (TransferOperation) sibs.getOperation(0);
 		verify(serviceMock).withdraw(this.sourceIban, 100);
+		// verify that 3 retries were done
 		verify(serviceMock, times(3)).deposit(this.targetIban, 100);
 		verify(serviceMock, never()).withdraw(this.sourceIban, 6);
 		verify(serviceMock).deposit(this.sourceIban, 100);
@@ -82,6 +85,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verrify that the transfer is in the ERROR state after 3 retries after faling
+	// in the withdraw
 	public void invalidWithdrawRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -97,6 +102,7 @@ public class RetryStateMockitoTest {
 		sibs.processOperations();
 
 		TransferOperation transfer = (TransferOperation) sibs.getOperation(0);
+		// verify that 3 retries were done
 		verify(serviceMock, times(3)).withdraw(this.sourceIban, 100);
 		verify(serviceMock, never()).deposit(this.targetIban, 100);
 		verify(serviceMock, never()).withdraw(this.sourceIban, 6);
@@ -107,6 +113,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verrify that the transfer is in the ERROR state after 3 retries after faling
+	// in the comission withdraw
 	public void invalidWithdrawComissionRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -124,6 +132,7 @@ public class RetryStateMockitoTest {
 		TransferOperation transfer = (TransferOperation) sibs.getOperation(0);
 		verify(serviceMock).withdraw(this.sourceIban, 100);
 		verify(serviceMock).deposit(this.targetIban, 100);
+		// verify that 3 retries were done
 		verify(serviceMock, times(3)).withdraw(this.sourceIban, 6);
 		verify(serviceMock).deposit(this.sourceIban, 100);
 		verify(serviceMock).withdraw(this.targetIban, 100);
@@ -132,6 +141,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verify that transfer goes in RETRY state after failing once in the comission
+	// and then succeeds
 	public void invalidWithdrawComissionOneRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -159,6 +170,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verify that transfer goes in RETRY state after failing once in the withdraw
+	// and then succeeds
 	public void invalidWithdrawOneRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -186,6 +199,8 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verify that transfer goes in RETRY state after failing once in the deposit
+	// and then succeeds
 	public void invalidDepositOneRetryState()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -212,6 +227,7 @@ public class RetryStateMockitoTest {
 		assertTrue(transfer.getState() instanceof COMPLETED);
 	}
 
+	// verify that multiple transefers are completed after one fails in one deposit
 	public void multipleTransfersCompletedAfterOneRetry()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -230,6 +246,7 @@ public class RetryStateMockitoTest {
 		TransferOperation transfer1 = (TransferOperation) sibs.getOperation(0);
 		TransferOperation transfer2 = (TransferOperation) sibs.getOperation(1);
 		verify(serviceMock).withdraw(this.sourceIban, 100);
+		// retry the deposit of first transfer
 		verify(serviceMock, times(2)).deposit(this.targetIban, 100);
 		verify(serviceMock).withdraw(this.sourceIban, 50);
 		verify(serviceMock).deposit(this.targetIban, 50);
@@ -242,6 +259,7 @@ public class RetryStateMockitoTest {
 	}
 
 	@Test
+	// verify that one trasfer fails an another one is completed
 	public void multipleTransfersCompletedAfterOneRetryAndFail()
 			throws SibsException, AccountException, OperationException, BankException, ClientException {
 
@@ -259,6 +277,7 @@ public class RetryStateMockitoTest {
 
 		TransferOperation transfer1 = (TransferOperation) sibs.getOperation(0);
 		TransferOperation transfer2 = (TransferOperation) sibs.getOperation(1);
+		// fails to withfrar
 		verify(serviceMock, times(3)).withdraw(this.sourceIban, 100);
 		verify(serviceMock, never()).deposit(this.targetIban, 100);
 		verify(serviceMock).withdraw(this.sourceIban, 50);
@@ -267,7 +286,9 @@ public class RetryStateMockitoTest {
 		verify(serviceMock, never()).deposit(this.sourceIban, 100);
 		verify(serviceMock, never()).withdraw(this.targetIban, 100);
 		verify(serviceMock, never()).deposit(this.sourceIban, 6);
+		// this transfer fails
 		assertTrue(transfer1.getState() instanceof ERROR);
+		// this is completed
 		assertTrue(transfer2.getState() instanceof COMPLETED);
 	}
 
